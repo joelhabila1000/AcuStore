@@ -1,0 +1,15 @@
+node_modules/
+# Environment files — the template stays committed, real values never do.
+.env
+.env.*
+!.env.example
+data/
+public/uploads/*
+!public/uploads/.gitkeep
+# Local agent/tool state (taste files etc.)
+.commandcode/
+npm-debug.log*
+yarn-error.log*
+*.log
+.DS_Store
+Thumbs.db

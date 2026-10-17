@@ -1,0 +1,48 @@
+<%- include('partials/head', { title }) %>
+
+<form method="post" action="/admin/account" class="settings-grid">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <section class="panel">
+    <div class="panel-head"><h2>Profile</h2></div>
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" name="name" value="<%= form.name %>" required>
+      <% if (errors.name) { %><p class="field-error"><%= errors.name %></p><% } %>
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" value="<%= form.email %>" required>
+      <% if (errors.email) { %><p class="field-error"><%= errors.email %></p><% } %>
+    </div>
+    <p class="muted small">You sign in with this email address.</p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Change password</h2></div>
+    <p class="muted small">Leave these blank to keep your current password.</p>
+    <div class="field">
+      <label for="current_password">Current password</label>
+      <input id="current_password" name="current_password" type="password" autocomplete="current-password">
+      <% if (errors.currentPassword) { %><p class="field-error"><%= errors.currentPassword %></p><% } %>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="new_password">New password</label>
+        <input id="new_password" name="new_password" type="password" autocomplete="new-password">
+        <% if (errors.newPassword) { %><p class="field-error"><%= errors.newPassword %></p><% } %>
+      </div>
+      <div class="field">
+        <label for="confirm_password">Confirm new password</label>
+        <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password">
+        <% if (errors.confirmPassword) { %><p class="field-error"><%= errors.confirmPassword %></p><% } %>
+      </div>
+    </div>
+  </section>
+
+  <div class="settings-actions">
+    <button class="btn btn-primary btn-lg" type="submit">Save changes</button>
+  </div>
+</form>
+
+<%- include('partials/foot') %>

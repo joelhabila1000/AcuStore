@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title || store.store_name %></title>
+  <% if (typeof metaDescription !== 'undefined' && metaDescription) { %>
+  <meta name="description" content="<%= metaDescription %>">
+  <% } %>
+  <link rel="canonical" href="<%= siteUrl %><%= currentPath %>">
+  <meta property="og:site_name" content="<%= store.store_name %>">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<%= title || store.store_name %>">
+  <meta property="og:url" content="<%= siteUrl %><%= currentPath %>">
+  <% if (store.hero_image) { %><meta property="og:image" content="<%= store.hero_image %>"><% } %>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/store.css">
+</head>
+<body>

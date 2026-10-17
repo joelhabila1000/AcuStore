@@ -1,0 +1,64 @@
+<%- include('../partials/head', { title, metaDescription }) %>
+<%- include('../partials/header') %>
+<main class="section">
+  <div class="wrap">
+    <h1>Your cart</h1>
+
+    <% if (cart.items.length) { %>
+      <div class="cart-layout">
+        <div class="cart-lines">
+          <% cart.items.forEach((item) => { %>
+            <div class="cart-line">
+              <a class="cart-thumb" href="/product/<%= item.product.slug %>">
+                <% if (item.product.image) { %>
+                  <img src="<%= item.product.image %>" alt="">
+                <% } else { %>
+                  <span class="ph ph-<%= (item.product.id % 8) + 1 %>" aria-hidden="true"><%= item.product.name.charAt(0).toUpperCase() %></span>
+                <% } %>
+              </a>
+              <div class="cart-line-info">
+                <a class="cart-line-name" href="/product/<%= item.product.slug %>"><%= item.product.name %></a>
+                <span class="muted"><%= money(item.unitPriceCents) %> each</span>
+              </div>
+              <form class="cart-line-qty" method="post" action="/cart/update">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="productId" value="<%= item.product.id %>">
+                <div class="qty" data-qty>
+                  <button class="qty-btn" type="button" data-qty-step="-1" aria-label="Decrease quantity">−</button>
+                  <input class="qty-input" type="number" name="quantity" value="<%= item.quantity %>" min="0" max="99" inputmode="numeric" aria-label="Quantity for <%= item.product.name %>">
+                  <button class="qty-btn" type="button" data-qty-step="1" aria-label="Increase quantity">+</button>
+                </div>
+                <button class="btn btn-ghost btn-sm" type="submit">Update</button>
+              </form>
+              <div class="cart-line-total"><%= money(item.lineTotalCents) %></div>
+              <form method="post" action="/cart/remove">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="productId" value="<%= item.product.id %>">
+                <button class="link-btn danger" type="submit">Remove</button>
+              </form>
+            </div>
+          <% }) %>
+        </div>
+
+        <aside class="summary">
+          <h2>Order summary</h2>
+          <div class="sum-row"><span>Subtotal</span><span><%= money(cart.subtotalCents) %></span></div>
+          <div class="sum-row"><span>Shipping</span><span><%= cart.shippingCents === 0 ? 'Free' : money(cart.shippingCents) %></span></div>
+          <% if (cart.freeThreshold > 0 && cart.subtotalCents < cart.freeThreshold) { %>
+            <p class="sum-hint">Add <%= money(cart.freeThreshold - cart.subtotalCents) %> more to qualify for free shipping.</p>
+          <% } %>
+          <div class="sum-row sum-total"><span>Total</span><span><%= money(cart.totalCents) %></span></div>
+          <a class="btn btn-primary btn-block btn-lg" href="/checkout">Checkout</a>
+          <a class="btn btn-ghost btn-block" href="/products">Continue shopping</a>
+        </aside>
+      </div>
+    <% } else { %>
+      <div class="empty">
+        <h2>Your cart is empty</h2>
+        <p>Browse the catalog and add something you like.</p>
+        <a class="btn btn-primary" href="/products">Start shopping</a>
+      </div>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>

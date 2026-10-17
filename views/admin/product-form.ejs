@@ -1,0 +1,120 @@
+<%- include('partials/head', { title }) %>
+<%
+  const isEdit = Boolean(product);
+  const formAction = isEdit
+    ? `/admin/products/${product.id}?_csrf=${encodeURIComponent(csrfToken)}`
+    : `/admin/products?_csrf=${encodeURIComponent(csrfToken)}`;
+  const value = (key) => {
+    const v = form[key];
+    return v === undefined || v === null ? '' : v;
+  };
+%>
+
+<div class="crumbs">
+  <a class="link" href="/admin/products">← All products</a>
+</div>
+
+<form class="product-form" method="post" action="<%= formAction %>" enctype="multipart/form-data">
+  <div class="panel form-main">
+    <div class="field">
+      <label for="name">Product name</label>
+      <input id="name" name="name" type="text" value="<%= value('name') %>" required data-slug-source autofocus>
+      <% if (errors.name) { %><p class="field-error"><%= errors.name %></p><% } %>
+    </div>
+
+    <div class="field">
+      <label for="slug">URL slug <span class="muted">(optional — generated from the name)</span></label>
+      <input id="slug" name="slug" type="text" value="<%= value('slug') %>" data-slug-target placeholder="auto-generated">
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="8"><%= value('description') %></textarea>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="price">Price (<%= store.currency_code %>)</label>
+        <input id="price" name="price" type="text" inputmode="decimal" value="<%= value('price') %>" placeholder="29.99" required>
+        <% if (errors.price) { %><p class="field-error"><%= errors.price %></p><% } %>
+      </div>
+      <div class="field">
+        <label for="compare_at_price">Compare-at price <span class="muted">(optional)</span></label>
+        <input id="compare_at_price" name="compare_at_price" type="text" inputmode="decimal" value="<%= value('compareAtPrice') %>" placeholder="39.99">
+        <% if (errors.compareAtPrice) { %><p class="field-error"><%= errors.compareAtPrice %></p><% } %>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="sku">SKU <span class="muted">(optional)</span></label>
+        <input id="sku" name="sku" type="text" value="<%= value('sku') %>">
+      </div>
+      <div class="field">
+        <label for="stock">Stock quantity</label>
+        <input id="stock" name="stock" type="number" min="0" step="1" value="<%= value('stock') %>">
+        <% if (errors.stock) { %><p class="field-error"><%= errors.stock %></p><% } %>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="category_id">Category</label>
+      <select id="category_id" name="category_id">
+        <option value="">Uncategorised</option>
+        <% categories.forEach((category) => { %>
+          <option value="<%= category.id %>" <%= String(form.categoryId) === String(category.id) ? 'selected' : '' %>><%= category.name %></option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+
+  <aside class="form-side">
+    <div class="panel">
+      <h3>Visibility</h3>
+      <label class="check"><input type="checkbox" name="active" value="1" <%= form.active ? 'checked' : '' %>> Visible in the store</label>
+      <label class="check"><input type="checkbox" name="featured" value="1" <%= form.featured ? 'checked' : '' %>> Feature on the home page</label>
+    </div>
+
+    <div class="panel">
+      <h3>Image</h3>
+      <% if (product && product.image) { %>
+        <img class="image-preview" src="<%= product.image %>" alt="" data-image-preview>
+      <% } else { %>
+        <img class="image-preview" alt="" data-image-preview hidden>
+      <% } %>
+
+      <div class="field">
+        <label for="image">Upload an image</label>
+        <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" data-image-input>
+        <p class="muted small">JPG, PNG, WebP, GIF or AVIF — up to 5MB.</p>
+      </div>
+
+      <div class="field">
+        <label for="image_url">…or paste an image URL</label>
+        <input id="image_url" name="image_url" type="text" value="<%= value('imageUrl') %>" placeholder="https://…">
+      </div>
+
+      <% if (product && product.image) { %>
+        <label class="check"><input type="checkbox" name="remove_image" value="1"> Remove the current image</label>
+      <% } %>
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn btn-primary btn-block btn-lg" type="submit"><%= isEdit ? 'Save changes' : 'Create product' %></button>
+      <a class="btn btn-ghost btn-block" href="/admin/products">Cancel</a>
+    </div>
+  </aside>
+</form>
+
+<% if (isEdit) { %>
+  <form class="panel danger-zone" method="post" action="/admin/products/<%= product.id %>/delete" data-confirm="Delete “<%= product.name %>”? This cannot be undone.">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div>
+      <h3>Delete this product</h3>
+      <p class="muted">This permanently removes the product from your store.</p>
+    </div>
+    <button class="btn btn-danger" type="submit">Delete product</button>
+  </form>
+<% } %>
+
+<%- include('partials/foot') %>

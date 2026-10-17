@@ -1,0 +1,31 @@
+<% if (store.announcement) { %>
+<div class="announce"><div class="wrap"><%= store.announcement %></div></div>
+<% } %>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"><%= (store.store_name || 'S').charAt(0).toUpperCase() %></span>
+      <span class="brand-name"><%= store.store_name %></span>
+    </a>
+
+    <nav class="site-nav" data-nav>
+      <a href="/products">Shop all</a>
+      <% navCategories.forEach((category) => { %>
+        <a href="/category/<%= category.slug %>"><%= category.name %></a>
+      <% }) %>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </nav>
+
+    <form class="header-search" method="get" action="/products" role="search">
+      <label class="sr-only" for="site-search">Search products</label>
+      <input id="site-search" type="search" name="q" placeholder="Search products" value="<%= (query && query.q) || '' %>">
+    </form>
+
+    <a class="cart-link" href="/cart">
+      <span class="cart-label">Cart</span>
+      <span class="cart-count" data-cart-count><%= cartCount %></span>
+    </a>
+  </div>
+</header>
+<%- include('flash') %>

@@ -1,0 +1,23 @@
+<%- include('../partials/head', { title, metaDescription }) %>
+<%- include('../partials/header') %>
+<main class="section">
+  <div class="wrap narrow prose">
+    <h1>About <%= store.store_name %></h1>
+    <% (body || '').split('\n').filter(Boolean).forEach((paragraph) => { %>
+      <p><%= paragraph %></p>
+    <% }) %>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>Talk to a human</h3>
+        <p class="muted">Questions about an order or a product? We answer every message.</p>
+        <a class="link" href="/contact">Get in touch →</a>
+      </div>
+      <div class="about-card">
+        <h3>Browse the shop</h3>
+        <p class="muted">See everything we currently have in stock and ready to ship.</p>
+        <a class="link" href="/products">Shop all products →</a>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>

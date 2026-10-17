@@ -1,0 +1,70 @@
+<%- include('../partials/head', { title, metaDescription }) %>
+<%- include('../partials/header') %>
+<main class="section">
+  <div class="wrap narrow">
+    <div class="order-confirm">
+      <span class="order-check" aria-hidden="true">✓</span>
+      <h1>Thank you, <%= order.customer_name.split(' ')[0] %>!</h1>
+      <p class="muted">Your order <strong><%= order.reference %></strong> has been received. We have sent a confirmation to <%= order.customer_email %>.</p>
+      <% if (store.payment_instructions) { %>
+        <p class="notice"><%= store.payment_instructions %></p>
+      <% } %>
+    </div>
+
+    <div class="order-panel">
+      <div class="order-panel-head">
+        <div>
+          <h2>Order <%= order.reference %></h2>
+          <p class="muted">Placed <%= formatDateTime(order.created_at) %></p>
+        </div>
+        <span class="status status-<%= order.status %>"><%= order.status %></span>
+      </div>
+
+      <ul class="order-items">
+        <% items.forEach((item) => { %>
+          <li>
+            <span class="order-item-thumb">
+              <% if (item.image) { %>
+                <img src="<%= item.image %>" alt="">
+              <% } else { %>
+                <span class="ph ph-<%= (item.id % 8) + 1 %>" aria-hidden="true"><%= item.name.charAt(0).toUpperCase() %></span>
+              <% } %>
+            </span>
+            <span class="order-item-name"><%= item.name %> <span class="muted">× <%= item.quantity %></span></span>
+            <span><%= money(item.unit_price_cents * item.quantity) %></span>
+          </li>
+        <% }) %>
+      </ul>
+
+      <div class="order-totals">
+        <div class="sum-row"><span>Subtotal</span><span><%= money(order.subtotal_cents) %></span></div>
+        <div class="sum-row"><span>Shipping</span><span><%= order.shipping_cents === 0 ? 'Free' : money(order.shipping_cents) %></span></div>
+        <div class="sum-row sum-total"><span>Total</span><span><%= money(order.total_cents) %></span></div>
+      </div>
+
+      <div class="order-meta">
+        <div>
+          <h3>Delivery address</h3>
+          <p class="muted">
+            <%= order.customer_name %><br>
+            <% order.shipping_address.split('\n').filter(Boolean).forEach((line) => { %><%= line %><br><% }) %>
+          </p>
+        </div>
+        <div>
+          <h3>Payment method</h3>
+          <p class="muted"><%= order.payment_method.replace(/_/g, ' ') %></p>
+          <% if (order.note) { %>
+            <h3>Note</h3>
+            <p class="muted"><%= order.note %></p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-actions">
+      <a class="btn btn-primary" href="/products">Continue shopping</a>
+      <a class="btn btn-ghost" href="/contact">Questions? Contact us</a>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>

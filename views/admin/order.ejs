@@ -1,0 +1,81 @@
+<%- include('partials/head', { title }) %>
+
+<div class="crumbs">
+  <a class="link" href="/admin/orders">← All orders</a>
+</div>
+
+<div class="admin-columns">
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2><%= order.reference %></h2>
+        <p class="muted small">Placed <%= formatDateTime(order.created_at) %> · <%= formatRelative(order.created_at) %></p>
+      </div>
+      <span class="status status-<%= order.status %>"><%= order.status %></span>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr><th>Item</th><th class="num">Unit price</th><th class="num">Qty</th><th class="num">Line total</th></tr>
+      </thead>
+      <tbody>
+        <% items.forEach((item) => { %>
+          <tr>
+            <td>
+              <%= item.name %>
+              <% if (!item.product_id) { %><span class="muted small">Product since removed</span><% } %>
+            </td>
+            <td class="num"><%= money(item.unit_price_cents) %></td>
+            <td class="num"><%= item.quantity %></td>
+            <td class="num"><strong><%= money(item.unit_price_cents * item.quantity) %></strong></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <div class="order-totals">
+      <div class="sum-row"><span>Subtotal</span><span><%= money(order.subtotal_cents) %></span></div>
+      <div class="sum-row"><span>Shipping</span><span><%= money(order.shipping_cents) %></span></div>
+      <div class="sum-row sum-total"><span>Total</span><span><%= money(order.total_cents) %></span></div>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <div class="panel-head"><h2>Customer</h2></div>
+    <dl class="detail-list">
+      <div><dt>Name</dt><dd><%= order.customer_name %></dd></div>
+      <div><dt>Email</dt><dd><a class="link" href="mailto:<%= order.customer_email %>"><%= order.customer_email %></a></dd></div>
+      <div><dt>Phone</dt><dd><%= order.customer_phone || '—' %></dd></div>
+      <div>
+        <dt>Delivery address</dt>
+        <dd><% order.shipping_address.split('\n').filter(Boolean).forEach((line) => { %><%= line %><br><% }) %></dd>
+      </div>
+      <div><dt>Payment method</dt><dd><%= order.payment_method.replace(/_/g, ' ') %></dd></div>
+      <% if (order.note) { %><div><dt>Note</dt><dd><%= order.note %></dd></div><% } %>
+    </dl>
+
+    <form class="status-form" method="post" action="/admin/orders/<%= order.id %>/status">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="field">
+        <label for="status">Update status</label>
+        <select id="status" name="status">
+          <% statuses.forEach((option) => { %>
+            <option value="<%= option.value %>" <%= order.status === option.value ? 'selected' : '' %>><%= option.label %></option>
+          <% }) %>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Save status</button>
+    </form>
+  </aside>
+</div>
+
+<form class="panel danger-zone" method="post" action="/admin/orders/<%= order.id %>/delete" data-confirm="Permanently delete order <%= order.reference %>?">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div>
+    <h3>Delete this order</h3>
+    <p class="muted">Removes the order and its items from the database.</p>
+  </div>
+  <button class="btn btn-danger" type="submit">Delete order</button>
+</form>
+
+<%- include('partials/foot') %>

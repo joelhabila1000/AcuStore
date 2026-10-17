@@ -1,0 +1,31 @@
+<%- include('../partials/head', { title, metaDescription }) %>
+<%- include('../partials/header') %>
+<main class="section">
+  <div class="wrap narrow prose">
+    <h1>Contact us</h1>
+    <p>We are happy to help with orders, product questions and returns. Reach us using any of the details below and we will get back to you as soon as we can.</p>
+    <div class="contact-grid">
+      <% if (store.contact_email) { %>
+        <div class="about-card">
+          <h3>Email</h3>
+          <p><a class="link" href="mailto:<%= store.contact_email %>"><%= store.contact_email %></a></p>
+        </div>
+      <% } %>
+      <% if (store.contact_phone) { %>
+        <div class="about-card">
+          <h3>Phone</h3>
+          <p><a class="link" href="tel:<%= store.contact_phone.replace(/\s+/g, '') %>"><%= store.contact_phone %></a></p>
+        </div>
+      <% } %>
+      <% if (store.address) { %>
+        <div class="about-card">
+          <h3>Address</h3>
+          <p class="muted">
+            <% store.address.split('\n').filter(Boolean).forEach((line) => { %><%= line %><br><% }) %>
+          </p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>

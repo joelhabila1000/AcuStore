@@ -1,0 +1,65 @@
+<%- include('partials/head', { title }) %>
+
+<div class="toolbar">
+  <form class="toolbar-search" method="get" action="/admin/orders">
+    <label class="sr-only" for="order-search">Search orders</label>
+    <input id="order-search" type="search" name="q" value="<%= q %>" placeholder="Search reference, name or email…">
+    <select name="status">
+      <option value="">All statuses</option>
+      <% statuses.forEach((option) => { %>
+        <option value="<%= option.value %>" <%= status === option.value ? 'selected' : '' %>><%= option.label %></option>
+      <% }) %>
+    </select>
+    <button class="btn btn-ghost" type="submit">Filter</button>
+    <% if (q || status) { %><a class="link" href="/admin/orders">Clear</a><% } %>
+  </form>
+  <span class="muted small"><%= result.total %> <%= pluralize(result.total, 'order') %></span>
+</div>
+
+<div class="panel">
+  <% if (result.items.length) { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Customer</th>
+          <th>Placed</th>
+          <th class="num">Items</th>
+          <th class="num">Total</th>
+          <th>Status</th>
+          <th class="actions-col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% result.items.forEach((order) => { %>
+          <tr>
+            <td><a class="table-title" href="/admin/orders/<%= order.id %>"><%= order.reference %></a></td>
+            <td>
+              <%= order.customer_name %>
+              <span class="muted small"><%= order.customer_email %></span>
+            </td>
+            <td class="muted"><%= formatDate(order.created_at) %></td>
+            <td class="num"><%= order.item_count %></td>
+            <td class="num"><strong><%= money(order.total_cents) %></strong></td>
+            <td><span class="status status-<%= order.status %>"><%= order.status %></span></td>
+            <td class="actions-col"><a class="link" href="/admin/orders/<%= order.id %>">View</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <%- include('../partials/pagination', {
+      page: result.page,
+      totalPages: result.totalPages,
+      baseUrl: '/admin/orders',
+      extraQuery: { q, status }
+    }) %>
+  <% } else { %>
+    <div class="empty">
+      <h2>No orders found</h2>
+      <p class="muted">Orders placed in the store will show up here.</p>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/foot') %>

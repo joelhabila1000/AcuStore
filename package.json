@@ -1,0 +1,34 @@
+{
+  "name": "acustore",
+  "version": "1.1.0",
+  "private": true,
+  "description": "acuStore - a general store website with a built-in CMS for managing products, prices, categories, orders and settings. Runs on Neon Postgres.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:bootstrap": "node src/scripts/neon-bootstrap.js",
+    "db:migrate": "node src/scripts/migrate.js",
+    "db:import": "node src/scripts/import-sqlite.js",
+    "setup": "node src/scripts/setup.js",
+    "images": "node src/scripts/fetch-images.js",
+    "admin:reset": "node src/scripts/reset-admin.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "better-sqlite3": "^11.10.0"
+  }
+}

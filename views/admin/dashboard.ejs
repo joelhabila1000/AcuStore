@@ -1,0 +1,83 @@
+<%- include('partials/head', { title }) %>
+
+<div class="stat-grid">
+  <div class="stat">
+    <span class="stat-label">Revenue</span>
+    <span class="stat-value"><%= money(stats.revenue_cents) %></span>
+    <span class="stat-note">Excludes cancelled orders</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Orders</span>
+    <span class="stat-value"><%= stats.order_count %></span>
+    <span class="stat-note"><%= stats.pending_orders %> pending</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Products</span>
+    <span class="stat-value"><%= stats.active_products %></span>
+    <span class="stat-note"><%= stats.product_count - stats.active_products %> hidden</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Categories</span>
+    <span class="stat-value"><%= stats.category_count %></span>
+    <span class="stat-note">Keep the catalog tidy</span>
+  </div>
+</div>
+
+<div class="admin-columns">
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Recent orders</h2>
+      <a class="link" href="/admin/orders">All orders →</a>
+    </div>
+    <% if (recentOrders.length) { %>
+      <table class="table">
+        <thead>
+          <tr><th>Reference</th><th>Customer</th><th class="num">Total</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <% recentOrders.forEach((order) => { %>
+            <tr>
+              <td><a class="table-title" href="/admin/orders/<%= order.id %>"><%= order.reference %></a><span class="muted small"><%= formatRelative(order.created_at) %></span></td>
+              <td><%= order.customer_name %></td>
+              <td class="num"><%= money(order.total_cents) %></td>
+              <td><span class="status status-<%= order.status %>"><%= order.status %></span></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="empty-note">No orders yet. They will appear here as customers check out.</p>
+    <% } %>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Low stock</h2>
+      <a class="link" href="/admin/products">Manage →</a>
+    </div>
+    <% if (lowStock.length) { %>
+      <ul class="list">
+        <% lowStock.forEach((product) => { %>
+          <li>
+            <a class="list-title" href="/admin/products/<%= product.id %>/edit"><%= product.name %></a>
+            <span class="pill pill-warn"><%= product.stock %> left</span>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p class="empty-note">Every active product has healthy stock.</p>
+    <% } %>
+  </section>
+</div>
+
+<section class="panel">
+  <div class="panel-head"><h2>Quick actions</h2></div>
+  <div class="quick-actions">
+    <a class="btn btn-primary" href="/admin/products/new">Add a product</a>
+    <a class="btn btn-ghost" href="/admin/categories">Manage categories</a>
+    <a class="btn btn-ghost" href="/admin/orders">Review orders</a>
+    <a class="btn btn-ghost" href="/admin/settings">Store settings</a>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

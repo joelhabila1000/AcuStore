@@ -1,0 +1,92 @@
+<%- include('../partials/head', { title, metaDescription }) %>
+<%- include('../partials/header') %>
+<main>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <% if (store.announcement) { %><p class="hero-eyebrow"><%= store.announcement %></p><% } %>
+        <h1><%= store.hero_title %></h1>
+        <p class="hero-sub"><%= store.hero_subtitle %></p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="<%= store.hero_cta_href || '/products' %>"><%= store.hero_cta_label || 'Shop all products' %></a>
+          <a class="btn btn-ghost btn-lg" href="/about">Our story</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <% if (store.hero_image) { %>
+          <img src="<%= store.hero_image %>" alt="">
+        <% } else { %>
+          <div class="hero-panel" aria-hidden="true">
+            <span class="hero-panel-title">New season<br>essentials</span>
+            <span class="hero-panel-note">Curated picks, fair prices</span>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <section class="perks">
+    <div class="wrap perks-grid">
+      <div class="perk">
+        <strong>Free delivery</strong>
+        <span>On orders over <%= money(store.free_shipping_threshold_cents) %></span>
+      </div>
+      <div class="perk">
+        <strong>Easy returns</strong>
+        <span>30 days, no questions asked</span>
+      </div>
+      <div class="perk">
+        <strong>Secure checkout</strong>
+        <span>Your details stay private</span>
+      </div>
+    </div>
+  </section>
+
+  <% if (categories.length) { %>
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Shop by category</h2>
+        <a class="link" href="/products">All products →</a>
+      </div>
+      <div class="cat-grid">
+        <% categories.forEach((category) => { %>
+          <a class="cat-tile" href="/category/<%= category.slug %>">
+            <span class="cat-name"><%= category.name %></span>
+            <span class="cat-count"><%= category.product_count %> <%= pluralize(category.product_count, 'item') %></span>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (featured.length) { %>
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Featured</h2>
+        <a class="link" href="/products">See everything →</a>
+      </div>
+      <div class="product-grid">
+        <% featured.forEach((product) => { %><%- include('../partials/product-card', { product }) %><% }) %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (latest.length) { %>
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>New arrivals</h2>
+        <a class="link" href="/products">See everything →</a>
+      </div>
+      <div class="product-grid">
+        <% latest.forEach((product) => { %><%- include('../partials/product-card', { product }) %><% }) %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+</main>
+<%- include('../partials/footer') %>

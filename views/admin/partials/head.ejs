@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · <%= store.store_name %> admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <aside class="sidebar" data-sidebar>
+    <div class="sidebar-head">
+      <a class="sidebar-brand" href="/admin">
+        <span class="brand-mark" aria-hidden="true"><%= (store.store_name || 'S').charAt(0).toUpperCase() %></span>
+        <span class="sidebar-brand-name"><%= store.store_name %></span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin" class="<%= active === 'dashboard' ? 'is-active' : '' %>">Dashboard</a>
+      <a href="/admin/products" class="<%= active === 'products' ? 'is-active' : '' %>">Products</a>
+      <a href="/admin/categories" class="<%= active === 'categories' ? 'is-active' : '' %>">Categories</a>
+      <a href="/admin/orders" class="<%= active === 'orders' ? 'is-active' : '' %>">Orders</a>
+      <a href="/admin/settings" class="<%= active === 'settings' ? 'is-active' : '' %>">Settings</a>
+      <a href="/admin/account" class="<%= active === 'account' ? 'is-active' : '' %>">Account</a>
+    </nav>
+    <div class="sidebar-foot">
+      <a class="sidebar-store-link" href="/" target="_blank" rel="noopener">View store</a>
+      <form method="post" action="/admin/logout">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="link-btn" type="submit">Sign out</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="topbar">
+      <button class="nav-toggle" type="button" data-sidebar-toggle aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <h1 class="topbar-title"><%= title %></h1>
+      <div class="topbar-user">
+        <span class="avatar" aria-hidden="true"><%= (currentAdmin ? currentAdmin.name : 'A').charAt(0).toUpperCase() %></span>
+        <span class="topbar-name"><%= currentAdmin ? currentAdmin.name : '' %></span>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <%- include('flash') %>

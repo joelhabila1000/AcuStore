@@ -1,0 +1,77 @@
+<%- include('partials/head', { title }) %>
+
+<div class="admin-columns wide-left">
+  <section class="panel">
+    <div class="panel-head">
+      <h2>All categories</h2>
+      <span class="muted small"><%= categories.length %> total</span>
+    </div>
+
+    <% if (categories.length) { %>
+      <div class="category-list">
+        <% categories.forEach((category) => { %>
+          <div class="category-item">
+            <form class="category-form" method="post" action="/admin/categories/<%= category.id %>">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <div class="category-grid">
+                <div class="field">
+                  <label for="cat-name-<%= category.id %>">Name</label>
+                  <input id="cat-name-<%= category.id %>" name="name" value="<%= category.name %>" required>
+                </div>
+                <div class="field">
+                  <label for="cat-slug-<%= category.id %>">Slug</label>
+                  <input id="cat-slug-<%= category.id %>" name="slug" value="<%= category.slug %>">
+                </div>
+                <div class="field field-narrow">
+                  <label for="cat-pos-<%= category.id %>">Position</label>
+                  <input id="cat-pos-<%= category.id %>" name="position" type="number" value="<%= category.position %>">
+                </div>
+                <div class="field field-wide">
+                  <label for="cat-desc-<%= category.id %>">Description</label>
+                  <input id="cat-desc-<%= category.id %>" name="description" value="<%= category.description %>">
+                </div>
+              </div>
+              <div class="category-foot">
+                <span class="muted small"><%= category.product_count %> <%= pluralize(category.product_count, 'product') %></span>
+                <button class="btn btn-ghost btn-sm" type="submit">Save changes</button>
+              </div>
+            </form>
+            <form class="category-remove" method="post" action="/admin/categories/<%= category.id %>/delete" data-confirm="Delete “<%= category.name %>”? Its products will become uncategorised.">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button class="link-btn danger" type="submit">Delete</button>
+            </form>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p class="empty-note">No categories yet. Add one on the right to organise your products.</p>
+    <% } %>
+  </section>
+
+  <aside class="panel">
+    <div class="panel-head"><h2>Add a category</h2></div>
+    <form method="post" action="/admin/categories">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="field">
+        <label for="new-cat-name">Name</label>
+        <input id="new-cat-name" name="name" value="<%= form.name || '' %>" required>
+        <% if (errors.name) { %><p class="field-error"><%= errors.name %></p><% } %>
+      </div>
+      <div class="field">
+        <label for="new-cat-slug">Slug <span class="muted">(optional)</span></label>
+        <input id="new-cat-slug" name="slug" placeholder="auto-generated">
+      </div>
+      <div class="field">
+        <label for="new-cat-desc">Description <span class="muted">(optional)</span></label>
+        <input id="new-cat-desc" name="description">
+      </div>
+      <div class="field">
+        <label for="new-cat-pos">Position</label>
+        <input id="new-cat-pos" name="position" type="number" value="0">
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Add category</button>
+    </form>
+  </aside>
+</div>
+
+<%- include('partials/foot') %>

@@ -1,0 +1,78 @@
+<%- include('partials/head', { title }) %>
+
+<div class="toolbar">
+  <form class="toolbar-search" method="get" action="/admin/products">
+    <label class="sr-only" for="product-search">Search products</label>
+    <input id="product-search" type="search" name="q" value="<%= q %>" placeholder="Search by name, SKU or description…">
+    <button class="btn btn-ghost" type="submit">Search</button>
+    <% if (q) { %><a class="link" href="/admin/products">Clear</a><% } %>
+  </form>
+  <a class="btn btn-primary" href="/admin/products/new">New product</a>
+</div>
+
+<div class="panel">
+  <% if (result.items.length) { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="cell-thumb-col"></th>
+          <th>Product</th>
+          <th>Category</th>
+          <th class="num">Price</th>
+          <th class="num">Stock</th>
+          <th>Status</th>
+          <th class="actions-col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% result.items.forEach((product) => { %>
+          <tr>
+            <td class="cell-thumb">
+              <% if (product.image) { %>
+                <img src="<%= product.image %>" alt="">
+              <% } else { %>
+                <span class="ph ph-<%= (product.id % 8) + 1 %>" aria-hidden="true"><%= product.name.charAt(0).toUpperCase() %></span>
+              <% } %>
+            </td>
+            <td>
+              <a class="table-title" href="/admin/products/<%= product.id %>/edit"><%= product.name %></a>
+              <% if (product.sku) { %><span class="muted small"><%= product.sku %></span><% } %>
+            </td>
+            <td><%= product.category_name || '—' %></td>
+            <td class="num">
+              <%= money(product.price_cents) %>
+              <% if (product.compare_at_cents) { %><span class="muted small strikethrough"><%= money(product.compare_at_cents) %></span><% } %>
+            </td>
+            <td class="num"><%= product.stock %></td>
+            <td>
+              <span class="pill <%= product.active ? 'pill-ok' : '' %>"><%= product.active ? 'Live' : 'Draft' %></span>
+              <% if (product.featured) { %><span class="pill pill-info">Featured</span><% } %>
+            </td>
+            <td class="actions-col">
+              <a class="link" href="/admin/products/<%= product.id %>/edit">Edit</a>
+              <form method="post" action="/admin/products/<%= product.id %>/delete" data-confirm="Delete “<%= product.name %>”? This cannot be undone.">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="link-btn danger" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <%- include('../partials/pagination', {
+      page: result.page,
+      totalPages: result.totalPages,
+      baseUrl: '/admin/products',
+      extraQuery: { q }
+    }) %>
+  <% } else { %>
+    <div class="empty">
+      <h2><%= q ? 'No matching products' : 'No products yet' %></h2>
+      <p class="muted"><%= q ? 'Try a different search term.' : 'Add your first product to get the store started.' %></p>
+      <a class="btn btn-primary" href="/admin/products/new">New product</a>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/foot') %>

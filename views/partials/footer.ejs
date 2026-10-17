@@ -1,0 +1,50 @@
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-col">
+      <p class="footer-brand"><%= store.store_name %></p>
+      <p class="muted"><%= store.tagline %></p>
+      <% if (store.social_instagram || store.social_twitter || store.social_facebook) { %>
+      <div class="socials">
+        <% if (store.social_instagram) { %><a href="<%= store.social_instagram %>" rel="noopener">Instagram</a><% } %>
+        <% if (store.social_twitter) { %><a href="<%= store.social_twitter %>" rel="noopener">X</a><% } %>
+        <% if (store.social_facebook) { %><a href="<%= store.social_facebook %>" rel="noopener">Facebook</a><% } %>
+      </div>
+      <% } %>
+    </div>
+
+    <div class="footer-col">
+      <h3>Shop</h3>
+      <a href="/products">All products</a>
+      <% navCategories.forEach((category) => { %>
+        <a href="/category/<%= category.slug %>"><%= category.name %></a>
+      <% }) %>
+    </div>
+
+    <div class="footer-col">
+      <h3>Help</h3>
+      <a href="/about">About us</a>
+      <a href="/contact">Contact</a>
+      <a href="/cart">Your cart</a>
+    </div>
+
+    <div class="footer-col">
+      <h3>Get in touch</h3>
+      <% if (store.contact_email) { %><a href="mailto:<%= store.contact_email %>"><%= store.contact_email %></a><% } %>
+      <% if (store.contact_phone) { %><a href="tel:<%= store.contact_phone.replace(/\s+/g, '') %>"><%= store.contact_phone %></a><% } %>
+      <% if (store.address) { %>
+        <p class="muted footer-address">
+          <% store.address.split('\n').filter(Boolean).forEach((line) => { %><%= line %><br><% }) %>
+        </p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="wrap footer-bottom">
+    <p class="muted">© <%= new Date().getFullYear() %> <%= store.store_name %>. All rights reserved.</p>
+    <% if (store.footer_text) { %><p class="muted"><%= store.footer_text %></p><% } %>
+  </div>
+</footer>
+<div class="toast" data-toast hidden></div>
+<script src="/js/store.js" defer></script>
+</body>
+</html>

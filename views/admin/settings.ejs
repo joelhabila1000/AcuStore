@@ -1,0 +1,143 @@
+<%- include('partials/head', { title }) %>
+<% const v = (key) => (s[key] === undefined || s[key] === null ? '' : s[key]); %>
+
+<form method="post" action="/admin/settings">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <div class="settings-grid">
+    <section class="panel">
+      <div class="panel-head"><h2>Store identity</h2></div>
+      <div class="field">
+        <label for="store_name">Store name</label>
+        <input id="store_name" name="store_name" value="<%= v('store_name') %>" required>
+        <% if (errors.store_name) { %><p class="field-error"><%= errors.store_name %></p><% } %>
+      </div>
+      <div class="field">
+        <label for="tagline">Tagline</label>
+        <input id="tagline" name="tagline" value="<%= v('tagline') %>">
+      </div>
+      <div class="field">
+        <label for="announcement">Announcement bar <span class="muted">(leave blank to hide)</span></label>
+        <input id="announcement" name="announcement" value="<%= v('announcement') %>">
+      </div>
+      <div class="field">
+        <label for="footer_text">Footer note <span class="muted">(optional)</span></label>
+        <input id="footer_text" name="footer_text" value="<%= v('footer_text') %>">
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Home page hero</h2></div>
+      <div class="field">
+        <label for="hero_title">Headline</label>
+        <input id="hero_title" name="hero_title" value="<%= v('hero_title') %>">
+      </div>
+      <div class="field">
+        <label for="hero_subtitle">Sub-headline</label>
+        <textarea id="hero_subtitle" name="hero_subtitle" rows="3"><%= v('hero_subtitle') %></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="hero_cta_label">Button label</label>
+          <input id="hero_cta_label" name="hero_cta_label" value="<%= v('hero_cta_label') %>">
+        </div>
+        <div class="field">
+          <label for="hero_cta_href">Button link</label>
+          <input id="hero_cta_href" name="hero_cta_href" value="<%= v('hero_cta_href') %>">
+        </div>
+      </div>
+      <div class="field">
+        <label for="hero_image">Hero image URL <span class="muted">(optional)</span></label>
+        <input id="hero_image" name="hero_image" value="<%= v('hero_image') %>" placeholder="https://…">
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Money &amp; shipping</h2></div>
+      <div class="field-row">
+        <div class="field">
+          <label for="currency_code">Currency code</label>
+          <input id="currency_code" name="currency_code" value="<%= v('currency_code') %>" placeholder="USD">
+        </div>
+        <div class="field">
+          <label for="currency_symbol">Currency symbol</label>
+          <input id="currency_symbol" name="currency_symbol" value="<%= v('currency_symbol') %>" placeholder="$">
+          <% if (errors.currency_symbol) { %><p class="field-error"><%= errors.currency_symbol %></p><% } %>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="shipping_fee">Shipping fee</label>
+          <input id="shipping_fee" name="shipping_fee" inputmode="decimal" value="<%= v('shipping_fee') %>">
+          <% if (errors.shipping_fee) { %><p class="field-error"><%= errors.shipping_fee %></p><% } %>
+        </div>
+        <div class="field">
+          <label for="free_shipping_threshold">Free shipping over</label>
+          <input id="free_shipping_threshold" name="free_shipping_threshold" inputmode="decimal" value="<%= v('free_shipping_threshold') %>">
+          <% if (errors.free_shipping_threshold) { %><p class="field-error"><%= errors.free_shipping_threshold %></p><% } %>
+        </div>
+      </div>
+      <div class="field">
+        <label for="products_per_page">Products per page</label>
+        <input id="products_per_page" name="products_per_page" type="number" min="1" max="60" value="<%= v('products_per_page') %>">
+        <% if (errors.products_per_page) { %><p class="field-error"><%= errors.products_per_page %></p><% } %>
+      </div>
+      <label class="check">
+        <input type="checkbox" name="manage_stock" value="1" <%= s.manage_stock === '1' ? 'checked' : '' %>>
+        Track inventory and hide products that are out of stock
+      </label>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Contact details</h2></div>
+      <div class="field">
+        <label for="contact_email">Email</label>
+        <input id="contact_email" name="contact_email" type="email" value="<%= v('contact_email') %>">
+        <% if (errors.contact_email) { %><p class="field-error"><%= errors.contact_email %></p><% } %>
+      </div>
+      <div class="field">
+        <label for="contact_phone">Phone <span class="muted">(optional)</span></label>
+        <input id="contact_phone" name="contact_phone" value="<%= v('contact_phone') %>">
+      </div>
+      <div class="field">
+        <label for="address">Address</label>
+        <textarea id="address" name="address" rows="3"><%= v('address') %></textarea>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Store content</h2></div>
+      <div class="field">
+        <label for="about_text">About text</label>
+        <textarea id="about_text" name="about_text" rows="6"><%= v('about_text') %></textarea>
+      </div>
+      <div class="field">
+        <label for="payment_instructions">Payment instructions shown after checkout</label>
+        <textarea id="payment_instructions" name="payment_instructions" rows="4"><%= v('payment_instructions') %></textarea>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Social links</h2></div>
+      <div class="field">
+        <label for="social_instagram">Instagram URL</label>
+        <input id="social_instagram" name="social_instagram" value="<%= v('social_instagram') %>" placeholder="https://instagram.com/…">
+      </div>
+      <div class="field">
+        <label for="social_twitter">X / Twitter URL</label>
+        <input id="social_twitter" name="social_twitter" value="<%= v('social_twitter') %>" placeholder="https://x.com/…">
+      </div>
+      <div class="field">
+        <label for="social_facebook">Facebook URL</label>
+        <input id="social_facebook" name="social_facebook" value="<%= v('social_facebook') %>" placeholder="https://facebook.com/…">
+      </div>
+    </section>
+  </div>
+
+  <div class="settings-actions">
+    <button class="btn btn-primary btn-lg" type="submit">Save settings</button>
+    <a class="btn btn-ghost btn-lg" href="/admin">Cancel</a>
+  </div>
+</form>
+
+<%- include('partials/foot') %>

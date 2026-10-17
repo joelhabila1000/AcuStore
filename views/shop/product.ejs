@@ -1,0 +1,90 @@
+<%- include('../partials/head', { title, metaDescription }) %>
+<%- include('../partials/header') %>
+<% const maxQty = manageStock ? Math.max(1, product.stock) : 99; %>
+<main class="section">
+  <div class="wrap">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <a href="/products">Products</a><span>/</span>
+      <% if (breadcrumbCategory) { %>
+        <a href="/category/<%= breadcrumbCategory.slug %>"><%= breadcrumbCategory.name %></a><span>/</span>
+      <% } %>
+      <span><%= product.name %></span>
+    </nav>
+
+    <div class="product-detail">
+      <div class="pd-media">
+        <% if (product.image) { %>
+          <img src="<%= product.image %>" alt="<%= product.name %>">
+        <% } else { %>
+          <span class="ph ph-<%= (product.id % 8) + 1 %> ph-lg" aria-hidden="true"><%= product.name.charAt(0).toUpperCase() %></span>
+        <% } %>
+      </div>
+
+      <div class="pd-info">
+        <% if (product.category_name) { %>
+          <a class="card-cat" href="/category/<%= product.category_slug %>"><%= product.category_name %></a>
+        <% } %>
+        <h1><%= product.name %></h1>
+
+        <div class="price price-lg">
+          <span class="price-now"><%= money(product.price_cents) %></span>
+          <% if (product.compare_at_cents && product.compare_at_cents > product.price_cents) { %>
+            <span class="price-was"><%= money(product.compare_at_cents) %></span>
+            <span class="badge badge-sale">Save <%= money(product.compare_at_cents - product.price_cents) %></span>
+          <% } %>
+        </div>
+
+        <p class="stock-status">
+          <% if (manageStock) { %>
+            <% if (product.stock > 0) { %>
+              <span class="dot dot-ok"></span> In stock<%= product.stock <= 5 ? ` — only ${product.stock} left` : '' %>
+            <% } else { %>
+              <span class="dot dot-out"></span> Out of stock
+            <% } %>
+          <% } else { %>
+            <span class="dot dot-ok"></span> Available to order
+          <% } %>
+        </p>
+
+        <div class="pd-desc">
+          <% product.description.split('\n').filter(Boolean).forEach((paragraph) => { %>
+            <p><%= paragraph %></p>
+          <% }) %>
+        </div>
+
+        <% if (inStock) { %>
+        <form class="pd-buy" method="post" action="/cart/add" data-ajax-form>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <input type="hidden" name="redirect" value="/cart">
+          <div class="qty" data-qty>
+            <button class="qty-btn" type="button" data-qty-step="-1" aria-label="Decrease quantity">−</button>
+            <input class="qty-input" type="number" name="quantity" value="1" min="1" max="<%= maxQty %>" inputmode="numeric" aria-label="Quantity">
+            <button class="qty-btn" type="button" data-qty-step="1" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="btn btn-primary btn-lg" type="submit">Add to cart</button>
+        </form>
+        <% } else { %>
+          <p class="btn btn-disabled btn-lg">Out of stock</p>
+        <% } %>
+
+        <dl class="pd-meta">
+          <% if (product.sku) { %><div><dt>SKU</dt><dd><%= product.sku %></dd></div><% } %>
+          <div><dt>Category</dt><dd><%= product.category_name || 'Uncategorised' %></dd></div>
+          <div><dt>Delivery</dt><dd>Free over <%= money(store.free_shipping_threshold_cents) %></dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <% if (related.length) { %>
+    <section class="section related">
+      <div class="section-head"><h2>You may also like</h2></div>
+      <div class="product-grid">
+        <% related.forEach((item) => { %><%- include('../partials/product-card', { product: item }) %><% }) %>
+      </div>
+    </section>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>

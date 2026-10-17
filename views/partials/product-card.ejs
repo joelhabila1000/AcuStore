@@ -1,0 +1,37 @@
+<% const soldOut = manageStock && product.stock <= 0; %>
+<article class="card">
+  <a class="card-media" href="/product/<%= product.slug %>" aria-label="<%= product.name %>">
+    <% if (product.image) { %>
+      <img src="<%= product.image %>" alt="<%= product.name %>" loading="lazy">
+    <% } else { %>
+      <span class="ph ph-<%= (product.id % 8) + 1 %>" aria-hidden="true"><%= product.name.charAt(0).toUpperCase() %></span>
+    <% } %>
+    <% if (product.compare_at_cents && product.compare_at_cents > product.price_cents) { %>
+      <span class="badge badge-sale">Sale</span>
+    <% } %>
+    <% if (soldOut) { %>
+      <span class="badge badge-out">Sold out</span>
+    <% } %>
+  </a>
+  <div class="card-body">
+    <% if (product.category_name) { %>
+      <a class="card-cat" href="/category/<%= product.category_slug %>"><%= product.category_name %></a>
+    <% } %>
+    <h3 class="card-title"><a href="/product/<%= product.slug %>"><%= product.name %></a></h3>
+    <div class="price">
+      <span class="price-now"><%= money(product.price_cents) %></span>
+      <% if (product.compare_at_cents && product.compare_at_cents > product.price_cents) { %>
+        <span class="price-was"><%= money(product.compare_at_cents) %></span>
+      <% } %>
+    </div>
+    <form class="card-add" method="post" action="/cart/add" data-ajax-form>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="productId" value="<%= product.id %>">
+      <input type="hidden" name="quantity" value="1">
+      <input type="hidden" name="redirect" value="<%= currentUrl %>">
+      <button class="btn btn-primary btn-block" type="submit" <%= soldOut ? 'disabled' : '' %>>
+        <%= soldOut ? 'Sold out' : 'Add to cart' %>
+      </button>
+    </form>
+  </div>
+</article>

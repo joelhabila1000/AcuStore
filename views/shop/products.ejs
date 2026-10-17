@@ -1,0 +1,53 @@
+<%- include('../partials/head', { title, metaDescription }) %>
+<%- include('../partials/header') %>
+<main class="section">
+  <div class="wrap">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <% if (category) { %>
+        <a href="/products">Products</a><span>/</span><span><%= category.name %></span>
+      <% } else { %>
+        <span><%= q ? 'Search' : 'All products' %></span>
+      <% } %>
+    </nav>
+
+    <div class="listing-head">
+      <div>
+        <h1><%= category ? category.name : (q ? `Results for “${q}”` : 'All products') %></h1>
+        <p class="muted">
+          <%= result.total %> <%= pluralize(result.total, 'product') %>
+          <% if (category && category.description) { %> · <%= category.description %><% } %>
+        </p>
+      </div>
+      <form class="sort-form" method="get" action="<%= baseUrl %>">
+        <% if (q) { %><input type="hidden" name="q" value="<%= q %>"><% } %>
+        <label for="sort">Sort by</label>
+        <select id="sort" name="sort" data-auto-submit>
+          <% sortOptions.forEach((option) => { %>
+            <option value="<%= option.value %>" <%= sort === option.value ? 'selected' : '' %>><%= option.label %></option>
+          <% }) %>
+        </select>
+        <noscript><button class="btn btn-ghost" type="submit">Apply</button></noscript>
+      </form>
+    </div>
+
+    <% if (result.items.length) { %>
+      <div class="product-grid">
+        <% result.items.forEach((product) => { %><%- include('../partials/product-card', { product }) %><% }) %>
+      </div>
+      <%- include('../partials/pagination', {
+        page: result.page,
+        totalPages: result.totalPages,
+        baseUrl,
+        extraQuery: { q, sort, category: category ? category.slug : '' }
+      }) %>
+    <% } else { %>
+      <div class="empty">
+        <h2>No products found</h2>
+        <p>Try a different search, or browse the full catalog.</p>
+        <a class="btn btn-primary" href="/products">Browse all products</a>
+      </div>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>

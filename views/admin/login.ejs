@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · <%= store.store_name %> admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="login-body">
+  <main class="login-card">
+    <div class="login-brand">
+      <span class="brand-mark" aria-hidden="true"><%= (store.store_name || 'S').charAt(0).toUpperCase() %></span>
+      <div>
+        <h1><%= store.store_name %></h1>
+        <p class="muted">Store manager</p>
+      </div>
+    </div>
+
+    <% if (error) { %><div class="flash flash-error" role="alert"><%= error %></div><% } %>
+    <% if (flash && flash.length) { %>
+      <% flash.forEach((item) => { %><div class="flash flash-<%= item.type %>" role="status"><%= item.message %></div><% }) %>
+    <% } %>
+
+    <form method="post" action="/admin/login" class="login-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" value="<%= email || '' %>" autocomplete="username" required autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit">Sign in</button>
+    </form>
+
+    <p class="muted small">Locked out? Reset a password with <code>npm run admin:reset</code>.</p>
+  </main>
+</body>
+</html>
